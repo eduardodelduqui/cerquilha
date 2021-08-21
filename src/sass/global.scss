@@ -1,0 +1,52 @@
+$color-primary: #42B983;
+$color-black: #23272A;
+
+@mixin line-clamp ($lines) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@mixin default-button {
+    font-size: 14px;
+    padding: 0 25px;
+    height: 40px;
+    text-transform: uppercase;
+    border: 1px solid $color-primary;
+    border-radius: 4px;
+}
+
+@mixin button-white {
+    @include default-button;
+    background-color: #fff;
+    color: $color-primary;
+    border: 1px solid $color-primary;
+}
+
+@mixin button-green {
+    @include default-button;
+    background-color: $color-primary;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+// Responsive Breakpoints
+@mixin for-desktop-up{
+    @media screen and (min-width: 1024px) {
+        @content;
+    }
+}
+
+
+@mixin for-laptop-up {
+    @media screen and (min-width: 768px) {
+        @content;
+    }
+}
+
+@mixin for-tablet-up{
+    @media screen and (min-width: 480px) {
+        @content;
+    }
+}
