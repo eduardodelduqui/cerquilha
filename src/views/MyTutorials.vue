@@ -1,37 +1,36 @@
 <template>
     <div>
         <NavBar />
-        <div data-page="search">
-            <SearchBar />
+        <div data-page="my-tutorials">
             <CerquilhaLoading v-if="!isLoaded" />
-            <div v-else class="search-container">
-                <CerquilhaText
-                    class="query-results"
-                    :textPortuguese='`Resultados para "${term}"`'
-                    :textEnglish='`Results for "${term}"`'
-                />
-                <CerquilhaText
-                    v-if="!hasResults"
-                    class="found-error"
-                    textPortuguese="Nenhum tutorial foi encontrado"
-                    textEnglish="No tutorial found"
-
-                />
-                <div class="tutorial-grid">
-                    <div v-for="tutorial in tutorials" :key="tutorial.tutorialId">
-                        <router-link :to="{name: 'tutorial', params: {id: tutorial.tutorialId}}">
-                            <Card 
-                                class="tutorial-card"
-                                :title="tutorial.title"
-                                :author="tutorial.username"
-                                :description="tutorial.description"
-                                :imageUrl="tutorial.imageUrl"
-                                :date="tutorial.tutorialDate"
-                            />
-                        </router-link>
-                    </div>
-                </div>   
-            </div>        
+            <div v-else>
+                <div
+                    v-if="hasTutorials"
+                    class="my-tutorials-container"
+                >
+                    <h1 class="page-title">Meus tutoriais</h1>
+                    <div class="tutorial-grid">
+                        <div v-for="tutorial in tutorials" :key="tutorial.tutorialId">
+                            <router-link :to="{name: 'edit-tutorial', params: {id: tutorial.tutorialId}}">
+                                <Card 
+                                    class="tutorial-card"
+                                    :title="tutorial.title"
+                                    :author="tutorial.username"
+                                    :description="tutorial.description"
+                                    :imageUrl="tutorial.imageUrl"
+                                    :date="tutorial.tutorialDate"
+                                />
+                            </router-link>
+                        </div>
+                    </div>   
+                </div>
+                <div v-else class="empty-page">
+                    <CerquilhaText
+                        textPortuguese="Você ainda não criou um tutorial"
+                        textEnglish="You haven't created a tutorial yet"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -41,7 +40,6 @@
 import NavBar from '@/components/NavBar.vue'
 import Card from '@/components/Card.vue'
 import Footer from '@/components/Footer.vue'
-import SearchBar from '@/components/SearchBar.vue'
 
 export default {
 
@@ -49,24 +47,25 @@ export default {
         NavBar,
         Card,
         Footer,
-        SearchBar
     },
 
     data() {
         return {
-            term: this.$route.params.term,
+            userId: '',
             tutorials: [],
             isLoaded: false
         }
     },
 
-    created () {
-        this.getTutorialFromTitle (this.term)
+    computed: {
+        hasTutorials() {
+            return this.tutorials.length > 0
+        }
     },
 
     methods: {
-        getTutorialFromTitle (title) {
-            this.$http.get(`tutorials/title/${title}`)
+        getTutorialFromUser (userId) {
+            this.$http.get(`tutorials/user/${userId}`)
             .then((res) => res.json())
             .then((tutorials) => {
                 this.tutorials = tutorials
@@ -75,46 +74,26 @@ export default {
         }
     },
 
-    computed: {
-        hasResults() {
-            return this.tutorials.length > 0
-        }
-    },
-
-    watch: {
-        $route(newValue, oldValue) {
-            this.getTutorialFromTitle (this.$route.params.term)
-            this.term = this.$route.params.term
-        }
-    },
+    created () {
+        this.userId = localStorage.getItem("id")
+        this.getTutorialFromUser (this.userId)
+    }
 }
 </script>
 
 <style lang="scss">
 @import '../sass/global.scss';
 
-div [data-page="search"] {
+div [data-page="my-tutorials"] {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
 
-    .search-container {
+    .my-tutorials-container {
         max-width: 800px;
         width: 100%;
-    }
-
-    .query-results {
-        display: block;
-        font-size: 18px;
-        margin: 0 0 16px 0;
-    }
-
-    .found-error {
-        display: block;
-        text-align: center;
-        padding-top: 30px;
     }
 
     .tutorial-grid {
@@ -204,6 +183,20 @@ div [data-page="search"] {
             background: url('../assets/search-icon.svg') no-repeat center;
             height: 48px;
             width: 40px;            
+        }
+    }
+
+    .empty-page {
+        height: 50vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+
+        span {
+            font-size: 18px;
+            color: #ccc;
+            text-align: center;
         }
     }
 }

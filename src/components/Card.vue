@@ -1,89 +1,57 @@
 <template>
-    <div class="tutorial-card">
-        <div class="card-header">
-            <h3 class="card-title">{{title}}</h3>
+    <div class="card-container">
+        <div class="card-thumbnail">
+            <img class="tutorial-image" :src="imageUrl" alt="Thumbnail image" :title="title">
         </div>
-        <span class="owner">{{this.user.name}}</span>
-        <p class="card-description">{{description}}</p>
-        <div class="card-footer">
-            <span class="rating">{{rating}}</span>
-            <button 
-                v-if="false"
-                class="card-button">
-            </button>
+        <div class="card-description">
+            <div class="tutorial-title">
+                <span>{{title}}</span>
+            </div>
+            <div class="tutorial-author">
+                <span>@{{author}}</span>
+            </div>
+            <div class="tutorial-description">
+                <span>{{description}}</span>
+            </div>
+            <div class="tutorial-date">
+                <span>{{date}}</span>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-export default {
 
+export default {
+    
     props: {
         title: {
             type: String,
-            required: false
+            required: true
         },
-        user_id: {
-            type: Number,
-            required: false
+        author: {
+            type: String,
+            required: true
         },
         description: {
             type: String,
-            required: false
+            required: true
         },
-        rating: {
+        imageUrl: {
             type: String,
             required: false
+        },
+        date: {
+            type: String,
+            required: true
+        },
+        favorite: {
+            type: Boolean,
+            required: false
         }
     },
-
-    data() {
-        return {
-            user: {
-                name: '',
-                nickname: ''
-            }
-        }
-    },
-
-    created () {
-        this.$http.get(`https://api-cerquilha.herokuapp.com/users/${this.user_id}`)
-        .then((res) => res.json())
-        .then((user) => {
-            this.user.name = user.username;
-            this.user.nickname = user.nickname;
-        })
-    }
 }
 </script>
 
-<style lang="scss">
-@import '../sass/global.scss';
-
-.tutorial-card {
-    padding: 10px;
-    background-color: #fff;
-    margin: 20px 0;
-    color: $color-black;
-}
-
-.card-title {
-    margin: 0;
-    height: 46px;
-    overflow: hidden;
-}
-
-.owner {
-    height: 20px;
-}
-
-.card-description {
-    height: 38px;
-    overflow: hidden;
-}
-
-.card-footer {
-    margin-top: 10px;
-}
-
+<style>
 </style>

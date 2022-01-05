@@ -5,21 +5,13 @@
 </template>
 
 <script>
-
-import NavBar from './components/NavBar.vue'
-
 export default {
-  components: {
-    NavBar
-  },
   name: 'app',
-  
-  computed: {
-    hasSearchMenu() {
-      return this.$route.matched[0].props.default && this.$route.matched[0].props.default.hasSearchMenu
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
     }
-  },
-
+  }
 }
 </script>
 
@@ -44,12 +36,30 @@ a {
 
 ul {
   padding: 0;
-  list-style: none;
+  list-style-type: none;
 }
 
 button {
   background: transparent;
   border: none;
+}
+
+/* Medium Editor */
+.insert-image-container {
+  pointer-events: none;
+}
+
+.medium-editor-toolbar {
+  transition: 100ms;
+}
+
+.medium-editor-container h6 {
+  background-color: #2b303b;
+  color: #ebcb8b;
+  font-weight: 400;
+  margin: 0 auto !important;
+  max-width: 800px !important;
+  padding: 10px;
 }
 
 </style>

@@ -1,46 +1,50 @@
 <template>
-        <router-link 
+        <router-link
             v-if="routeName"
+            class="button"
+            :disabled="disabled"
+            :class="{
+                'disabled': disabled,
+                'pointer': pointer
+                }"
+            :type="type"
+            tag="button"
             :to="{name: routeName, params: { term: routeParam}}"
-            >
-            <button 
-                :class="['button-default', computedColor, {'button-border': borderRadius}]"
-                :type="type"
-                >
-                {{text}}
-                <slot/>
-                </button>
+        >
+            {{text}}
+            <slot></slot>
         </router-link>
         <button
             v-else 
-            class="button-default"
-            :class="computedColor"
+            @click="confirm()"
+            class="button"
+            :disabled="disabled"
+            :class="{
+                'disabled': disabled,
+                'pointer': pointer
+                }"
             :type="type"
-            >
+        >
             {{text}}
-            <slot/>
-            </button>
+            <slot></slot>
+        </button>
 </template>
 
 <script>
 export default {
 
     props: {
-        color: {
-            type: String,
-            required: false,
+        disabled: {
+            type: Boolean,
+            default: false
         },
         text: {
             type: String,
-            required: true
+            required: false
         },
         type: {
             type: String,
             required: true
-        },
-        borderRadius: {
-            type: Boolean,
-            default: false
         },
         routeName: {
             type: String,
@@ -48,48 +52,52 @@ export default {
         },
         routeParam: {
             required: false
+        },
+        confirmText: {
+            type: String
+        },
+        pointer: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     },
 
-    computed: {
-        computedColor() {
-            if (this.color === 'white') {
-                return 'button-white'
-            } else {
-                return 'button-green'
+    methods: {
+        confirm() {
+            if (this.confirmText && window.confirm(this.confirmText)) {
+                this.$emit('confirm')
             }
         }
-    }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../sass/global.scss';
 
-.button-default {
-    font-size: 14px;
-    padding: 0 25px;
-    height: 40px;
-    text-transform: uppercase;
-    border: 1px solid $color-primary;
-    border-radius: 4px;
+.button {
+    display: flex;
     cursor: pointer;
-}
+    justify-content: center;
+    align-items: center;
 
-.button-white {
-    background-color: #fff;
-    color: $color-primary;
-    border: 1px solid $color-primary;
-}
+    a {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+    }
 
-.button-green {
-    background-color: $color-primary;
-    border: 1px solid #fff;
-    color: #fff;
-}
+    &.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
 
-.button-border {
-    border-radius: 20px
+    &.pointer {
+        cursor: pointer;
+    }
 }
 
 </style>

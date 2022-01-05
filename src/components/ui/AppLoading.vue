@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="loading">
         <div :style="{borderColor: color}" class="spinning-circle"></div>
         <span :style="{color: textColor}" class="loading-text">{{text}}</span>
     </div>
@@ -9,10 +9,6 @@
 export default {
 
     props: {
-        text: {
-            type: String,
-            default: 'Carregando...'
-        },
         color: {
             type: String,
             default: '#42B983'
@@ -22,11 +18,24 @@ export default {
             default: '#23272A'
         }
     },
+
+    computed: {
+        text() {
+            return localStorage.getItem("lang") === "en" ? 'Loading...' : 'Carregando...'
+        }
+    },
 }
 </script>
 
 <style lang="scss">
-@import '../sass/global.scss';
+@import '../../sass/global.scss';
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
 .spinning-circle {
     height: 30px;

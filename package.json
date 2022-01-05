@@ -1,20 +1,26 @@
 {
-  "name": "project-cerquilha",
+  "name": "cerquilha",
   "description": "A Vue.js project",
   "version": "1.0.0",
   "author": "Eduardo Delduqui <eduardodelduquia@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
+    "clean": "rimraf dist",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "bootstrap": "^5.1.0",
+    "@vue/composition-api": "^1.2.1",
+    "bootstrap": "^5.1.1",
     "bootstrap-vue": "^2.21.2",
     "vue": "^2.6.14",
+    "vue-highlightjs": "^1.3.3",
     "vue-resource": "^1.5.3",
-    "vue-router": "^3.5.2"
+    "vue-router": "^3.5.2",
+    "vue2-quill-editor": "^2.0.26",
+    "vuejs-medium-editor": "^1.2.1",
+    "webpack-dev-server": "^2.9.1"
   },
   "browserslist": [
     "> 1%",
@@ -33,7 +39,6 @@
     "sass-loader": "^6.0.6",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
-    "webpack": "^3.6.0",
-    "webpack-dev-server": "^2.9.1"
+    "webpack": "^3.6.0"
   }
 }

@@ -1,4 +1,4 @@
-# project-cerquilha
+# cerquilha
 
 > A Vue.js project
 

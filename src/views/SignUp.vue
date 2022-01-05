@@ -1,249 +1,388 @@
 <template>
-    <div>
+    <div data-page="signup-page">
         <NavBar/>
         <div class="signup-page">
             <div class="grid-container">
-                <div class="headline">
-                    <h1 class="headline-title">Faça parte da tripulação!</h1>
-                    <img src="../assets/signup-img.png" alt="">
+                <div class="headline">                        
+                    <CerquilhaText
+                        tag="h1"
+                        class="headline-title"
+                        textPortuguese="Faça parte da tripulação!"
+                        textEnglish="Be part of the crew!"
+                    />
+                    <img src="@/assets/signup-img.png" alt="">
                 </div>
                 <div class="form-container">
-                    <h2 class="form-title">CRIE O SEU CADASTRO</h2>
-                    <form @submit.prevent="addUser()">
+                    <CerquilhaText
+                        class="success-message"
+                        :class="{'active': successMessage}"
+                        textPortuguese="Cadastro realizado com sucesso!"
+                        textEnglish="Successfully registered!"
+                    />
+                    <CerquilhaText
+                        tag="h2"
+                        class="form-title"
+                        textPortuguese="CRIE O SEU CADASTRO"
+                        textEnglish="SIGN UP TO CERQUILHA"
+                    />
+                    <form @submit.prevent="submitForm()">
+                        <div class="form-group">
+                            <label for="input-username" class="form-label">
+                                <CerquilhaText
+                                    textPortuguese="Usuário"
+                                    textEnglish="Username"
+                                />
+                            </label>
+                            <input v-model="form.username" id="input-username" class="form-input" type="text">
+                            <CerquilhaText
+                                class="username-disclaimer"
+                                textPortuguese="*Esse será o seu nome público no Cerquilha"
+                                textEnglish="*This will be your public name on Cerquilha"
+                            />
+                            <div class="error-container">
+                                <CerquilhaText
+                                    v-if="errorFields.username"
+                                    textPortuguese="Insira o seu nome de usuário"
+                                    textEnglish="Insert your username"
+                                />
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label for="input-email" class="form-label">E-mail</label>
                             <input v-model="form.email" id="input-email" class="form-input" type="email">
-                            <span v-if="error.email" class="error-checkbox">E-mail inválido, insira um e-mail válido</span>
+                            <div class="error-container">
+                                <CerquilhaText
+                                    v-if="errorFields.email"
+                                    textPortuguese="Insira um e-mail válido"
+                                    textEnglish="Insert a valid e-mail"
+                                />
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="input-password" class="form-label">Senha</label>
+                            <label for="input-password" class="form-label">
+                                <CerquilhaText
+                                    textPortuguese="Senha"
+                                    textEnglish="Password"
+                                />
+                            </label>
                             <input v-model="form.password" id="input-password" class="form-input" type="password">
-                            <span v-if="isPasswordWrong" class="error-checkbox">Senha inválida, insira uma senha válida</span>
+                            <div class="error-container">
+                                <CerquilhaText
+                                    v-if="errorFields.email"
+                                    textPortuguese="Insira a sua senha"
+                                    textEnglish="Insert your password"
+                                />
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="input-confirm-password" class="form-label">Confirmar senha</label>
-                            <input v-model="form.confirmPassword" id="input-confirm-password" class="form-input" type="password">
-                            <span v-if="isConfirmPasswordWrong" class="error-checkbox">Senhas diferentes, repita corretamente a senha</span>
+                            <label for="input-confirm-password" class="form-label">
+                                <CerquilhaText
+                                    textPortuguese="Confirmar senha"
+                                    textEnglish="Confirm password"
+                                />
+                            </label>
+                            <input v-model="confirmPassword" id="input-confirm-password" class="form-input" type="password">
+                            <div class="error-container">
+                                <CerquilhaText
+                                    v-if="errorFields.confirmPassword"
+                                    textPortuguese="Repita corretamente a senha"
+                                    textEnglish="Repeat password correctly"
+                                />
+                            </div>
                         </div>
                         <div class="form-group checkbox-group">
-                            <input v-model="form.acceptTerms"  id="input-checkbox" type="checkbox">
-                            <label for="input-checkbox">Li e aceito os termos de uso</label>
-                            <span v-if="isCheckboxWrong" class="error-checkbox">Por favor, leia e aceite os termos</span>
+                            <input id="input-checkbox" type="checkbox" required>
+                            <label for="input-checkbox">
+                                <CerquilhaText
+                                    textPortuguese="Li e aceito os termos de uso"
+                                    textEnglish="I've read and accepted the terms of use"
+                                />
+                            </label>
                         </div>
                         <div class="button-container">
                             <Button 
-                                text="CADASTRAR"
-                                color="green"
                                 type="submit"
-                                class="form-button"
-                            />
-                            <router-link :to="{name: 'login'}">
-                                <Button 
-                                    text="JÁ TENHO UM PERFIL"
-                                    color="white"
-                                    type="button"
-                                    class="form-button"
+                                class="form-button signup-button"
+                            >
+                                <CerquilhaText
+                                    textPortuguese="Cadastrar"
+                                    textEnglish="Sign up"
                                 />
-                            </router-link>
+                            </Button>
+                            <Button 
+                                type="button"
+                                class="form-button login-button"
+                                routeName="login"
+                            >
+                                <CerquilhaText
+                                    textPortuguese="Já tenho um perfil"
+                                    textEnglish="I already have an account"
+                                />
+                            </Button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+        <Footer/>
     </div>
 </template>
 
 <script>
 
-import NavBar from "../components/NavBar.vue"
-import Button from "../components/Button.vue"
+import NavBar from "@/components/NavBar.vue"
+import Button from "@/components/Button.vue"
+import Footer from "@/components/Footer.vue"
+import User from "@/models/User"
 
 export default {
     components: {
         NavBar,
-        Button
+        Button,
+        Footer
     },
 
     data() {
         return {
-            form: {
+            form: new User(),
+            errorFields: {
+                username: '',
                 email: '',
                 password: '',
-                confirmPassword: '',
-                acceptTerms: false
+                confirmPassword: ''
             },
-
-            error: {
-                email: false,
-                password: false,
-                confirmPassword: false,
-                acceptTerms: false
-            }
+            confirmPassword: '',
+            successMessage: false
         }
     },
 
     methods: {
-        isFormValid() {
-            !this.form.email ? this.error.email = true : this.error.email = false
-            !this.form.password ? this.error.password = true : this.error.password = false
-            this.form.password !== this.form.confirmPassword ? this.error.confirmPassword = true : this.error.confirmPassword = false
-            !this.form.acceptTerms ? this.error.acceptTerms = true : this.error.acceptTerms = false
-
-            const error = (Object.values(this.error).some((field) => {
-                return field
-            }))
-            
-            return !error
-        },
-
-        addUser() {
-            if(this.isFormValid()) {
-                const validForm = {
-                    username: this.form.email,
-                    email: this.form.email,
-                    nickname: this.form.email,
-                    pw: this.form.password
-                }
-                this.$http.post(`https://api-cerquilha.herokuapp.com/users`, validForm)
-                .then(() => this.clearForm(), err => console.log(err))
+        submitForm () {
+            this.updateErrorFields()
+            if (this.isFormValid()) {
+                this.addUser()
             }
         },
-
+        isUsernameValid () {
+            return this.form.username ? true : false
+        },
+        isEmailValid () {
+            const re = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+            return re.test(String(this.form.email).toLowerCase());
+        },
+        isPasswordValid () {
+            return this.form.password ? true : false
+        },
+        isPasswordConfirmed () {
+            return this.form.password == this.confirmPassword 
+        },
+        isFormValid () {
+            return this.isUsernameValid() && this.isEmailValid() && this.isPasswordValid() && this.isPasswordConfirmed()
+        },
+        updateErrorFields () {
+            this.errorFields.username = !this.isUsernameValid()
+            this.errorFields.email = !this.isEmailValid()
+            this.errorFields.password = !this.isPasswordValid()
+            this.errorFields.confirmPassword = !this.isPasswordConfirmed()
+        },
         clearForm() {
-            this.form = {
-                email: '',
-                password: '',
-                confirmPassword: '',
-                acceptTerms: false
-            }
+            this.form = new User()
+            this.confirmPassword = ''
+        },
+        showSuccessMessage() {
+            this.successMessage = true
+        },
+        addUser() {
+            this.$http.post(`users`, this.form)
+            .then(() => {
+                this.clearForm()
+                this.showSuccessMessage()
+            }, err => console.log(err))
         }
-    },
-
-    computed: {
-        isEmailWrong() {
-            return this.error.email
-        },
-        isPasswordWrong() {
-            return this.error.password
-        },
-        isConfirmPasswordWrong() {
-            return this.error.confirmPassword
-        },
-        isCheckboxWrong() {
-            return this.error.acceptTerms
-        }
-    },
+    }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../sass/global.scss';
 
-.signup-page {
-    display: flex;
-    justify-content: center;
-}
+[data-page="signup-page"] {
 
-.headline {
-    display: none;
-}
-
-.headline-title {
-    font-size: 72px;
-    color: $color-black;
-    margin: 0;
-}
-
-.grid-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    max-width: 1200px;
-    width: 100%;
-    justify-items: center;
-    align-items: center;
-}
-
-.form-container {
-    display: flex;
-    flex-direction: column;
-    padding: 40px;
-    max-width: 500px;
-    width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.1);
-
-}
-
-.form-title {
-    color: #4C4C4C;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 400;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
-
-    .form-label {
-        font-size: 14px;
-        font-weight: 700;
-        color: #4C4C4C;
-        margin-bottom: 8px;
+    .signup-page {
+        display: flex;
+        justify-content: center;
+        min-height: calc(100vh - 72px - 144px);
     }
-
-    .form-input {
-        height: 40px;
-        border: 1px solid #4C4C4C;
-    }
-
-    &:last-child {
-        margin-bottom: 30px;
-    }
-}
-
-.checkbox-group {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-
-    #input-checkbox {
-        height: 20px;
-        width: 20px;
-        margin-right: 5px;
-    }
-}
-
-.form-button {
-    display: block;
-    font-weight: 700;
-    width: 100%;
-
-    &:last-child {
-        margin-top: 16px;
-    }
-}
-
-.error-checkbox {
-    color: #ff0000;
-    display: block;
-    width: 100%;
-}
-
-@include for-desktop-up {
+    
     .headline {
-        display: block;
+        display: none;
     }
-
+    
+    .headline-title {
+        font-size: 72px;
+        color: $color-black;
+        margin: 0;
+    }
+    
     .grid-container {
-        padding: 100px 0;
-        grid-template-columns: 1fr 1fr;
+        display: grid;
+        grid-template-columns: 1fr;
+        max-width: 1200px;
+        width: 100%;
+        justify-items: center;
+        align-items: center;
     }
-
+    
     .form-container {
-        grid-column-start: 2;
-        padding: 40px 86px;
+        display: flex;
+        flex-direction: column;
+        padding: 40px;
+        max-width: 500px;
+        width: 100%;
+        border-radius: 8px;
+    }
+    
+    .form-title {
+        color: #4C4C4C;
+        text-align: center;
+        font-size: 24px;
+        font-weight: 400;
+        margin-bottom: 16px;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 12px;
+    
+        .form-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #4C4C4C;
+            margin-bottom: 8px;
+        }
+    
+        .form-input {
+            height: 40px;
+            border: 1px solid #4C4C4C;
+        }
+    
+        &:last-child {
+            margin-bottom: 30px;
+        }
+    }
+    
+    .checkbox-group {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    
+        #input-checkbox {
+            height: 20px;
+            width: 20px;
+            margin-right: 5px;
+        }
+    }
+    
+    .form-button {
+        display: block;
+        width: 100%;
+    
+        &.signup-button {
+            @include button-green;
+            font-weight: 700;
+        }
+    
+        &.login-button {
+            @include button-white;
+            margin-top: 16px;
+    
+            .button {
+                font-size: 14px;
+                font-weight: 700;
+                color: $color-primary;
+            }
+        }
+    }
+    
+    .username-disclaimer {
+        font-size: 12px;
+        color: $color-black;
+    }
+    
+    .success-message {
+        display: none;
+        position: absolute;
+        transform: translateX(-50%);
+        left: 50%;
+        top: 100px;
+        background-color: $color-primary;
+        color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        opacity: 0;
+    
+        &.active {
+            display: block;
+            animation: fade-in 8s both;
+        }
+    }
+    
+    .error-container {
+        color: #ec2626;
+        height: 20px;
+    }
+    
+    @include for-tablet-up {
+        .signup-page {
+            padding: 100px 0;
+        }
+    
+        .form-container {
+            box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.1);
+            padding: 40px 86px;
+        }
+    
+        .form-button {
+            height: 56px;
+        }
+    
+        .success-message {
+            width: 200px;
+        }
+    }
+    
+    @include for-laptop-up {
+        .form-container {
+            padding: 40px 86px;
+        }
+    }
+    
+    @include for-desktop-up {
+        .headline {
+            display: block;
+        }
+    
+        .grid-container {
+            grid-template-columns: 1fr 1fr;
+        }
+    
+        .form-container {
+            grid-column-start: 2;
+        }
+    }
+    
+    @keyframes fade-in {
+        0% {
+            display: block;
+            opacity: 0
+        } 20% {
+            opacity: 1
+        } 80% {
+            opacity: 1
+        }100% {
+            opacity: 0
+        }
     }
 }
 

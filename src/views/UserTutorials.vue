@@ -1,22 +1,17 @@
 <template>
     <div>
         <NavBar />
-        <div data-page="search">
-            <SearchBar />
-            <CerquilhaLoading v-if="!isLoaded" />
-            <div v-else class="search-container">
+        <div data-page="user-tutorials">
+            <div class="user-details">
+                <img class="user-img" src="@/assets/userphotoexample.png" alt="">
+                <h1 class="page-title">@{{user.username}}</h1>
                 <CerquilhaText
-                    class="query-results"
-                    :textPortuguese='`Resultados para "${term}"`'
-                    :textEnglish='`Results for "${term}"`'
+                    class="member-since"
+                    :textPortuguese="`Membro desde: ${user.date}`"
+                    :textEnglish="`Member since: ${user.date}`"
                 />
-                <CerquilhaText
-                    v-if="!hasResults"
-                    class="found-error"
-                    textPortuguese="Nenhum tutorial foi encontrado"
-                    textEnglish="No tutorial found"
-
-                />
+            </div>
+            <div class="user-tutorials-container">
                 <div class="tutorial-grid">
                     <div v-for="tutorial in tutorials" :key="tutorial.tutorialId">
                         <router-link :to="{name: 'tutorial', params: {id: tutorial.tutorialId}}">
@@ -41,7 +36,6 @@
 import NavBar from '@/components/NavBar.vue'
 import Card from '@/components/Card.vue'
 import Footer from '@/components/Footer.vue'
-import SearchBar from '@/components/SearchBar.vue'
 
 export default {
 
@@ -49,72 +43,70 @@ export default {
         NavBar,
         Card,
         Footer,
-        SearchBar
     },
 
     data() {
         return {
-            term: this.$route.params.term,
+            user: {
+                username: this.$route.params.username,
+                date: ''
+            },
             tutorials: [],
-            isLoaded: false
         }
     },
 
     created () {
-        this.getTutorialFromTitle (this.term)
+        this.getTutorialByUsername(this.user.username)
     },
 
     methods: {
-        getTutorialFromTitle (title) {
-            this.$http.get(`tutorials/title/${title}`)
-            .then((res) => res.json())
-            .then((tutorials) => {
-                this.tutorials = tutorials
-                this.isLoaded = true
-            })
+        getTutorialByUsername(username) {
+            this.$http.get(`users/username/${username}`)
+                .then((res) => res.json())
+                .then((user) => {
+                    this.user.date = user.userDate
+                    this.$http.get(`tutorials/user/${user.userId}`)
+                        .then((res) => res.json())
+                        .then((tutorials) => {
+                            this.tutorials = tutorials
+                        })
+                })
         }
-    },
-
-    computed: {
-        hasResults() {
-            return this.tutorials.length > 0
-        }
-    },
-
-    watch: {
-        $route(newValue, oldValue) {
-            this.getTutorialFromTitle (this.$route.params.term)
-            this.term = this.$route.params.term
-        }
-    },
+    }
 }
 </script>
 
 <style lang="scss">
 @import '../sass/global.scss';
 
-div [data-page="search"] {
+
+[data-page="user-tutorials"] {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 20px;
 
-    .search-container {
+    .page-title {
+        font-size: 18px;
+        text-align: center;
+        color: $color-black;
+    }
+
+    .user-img {
+        max-width: 100px;
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .user-tutorials-container {
         max-width: 800px;
         width: 100%;
-    }
-
-    .query-results {
-        display: block;
-        font-size: 18px;
-        margin: 0 0 16px 0;
-    }
-
-    .found-error {
-        display: block;
-        text-align: center;
-        padding-top: 30px;
     }
 
     .tutorial-grid {
@@ -132,6 +124,7 @@ div [data-page="search"] {
         border-bottom: 1px solid $color-primary;
         width: 100%;
     }
+    
 
     .card-container {
         display: grid;
@@ -183,9 +176,7 @@ div [data-page="search"] {
         display: block;
         height: 48px;
         width: 100%;
-        padding: 15px;
         border: none;
-        outline: none;
     }
 
     #search-button {
