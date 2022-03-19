@@ -177,9 +177,21 @@ div [data-page="search"] {
         border: 1px solid $color-primary;
         border-radius: 8px;
         overflow: hidden;
+                    
+        &.error-message {
+            border: 1px solid #cc0000;
+
+            .search-input {
+                animation: shake-input 500ms both;
+                
+                &::placeholder {
+                color: #cc0000;
+                }
+            }
+        }
     }
 
-    #search-input {
+    .search-input {
         display: block;
         height: 48px;
         width: 100%;

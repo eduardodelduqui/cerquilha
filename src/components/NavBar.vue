@@ -186,6 +186,10 @@ export default {
         display: none;
     }
 
+    .logo {
+        width: max-content;
+    }
+
     @include for-desktop-up {          
         &:not(.has-user) {
             .button-container {

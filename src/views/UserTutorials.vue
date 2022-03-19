@@ -172,7 +172,7 @@ export default {
         overflow: hidden;
     }
 
-    #search-input {
+    .search-input {
         display: block;
         height: 48px;
         width: 100%;
