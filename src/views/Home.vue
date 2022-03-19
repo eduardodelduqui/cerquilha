@@ -180,15 +180,29 @@ body {
     
         .search-input-container {
             display: flex;
+            background: #fff;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            overflow: hidden;
+            
+            &.error-message {
+                border: 1px solid #cc0000;
+
+                .search-input {
+                    animation: shake-input 500ms both;
+                    
+                    &::placeholder {
+                    color: #cc0000;
+                    }
+                }
+            }
         }
     
-        #search-input {
+        .search-input {
             display: block;
             height: 48px;
             width: 100%;
             border: none;
-            border-top-left-radius: 4px;
-            border-bottom-left-radius: 4px;
             padding: 15px;
             outline: none;
         }
@@ -197,10 +211,7 @@ body {
             display: flex;
             width: 40px;
             height: 48px;
-            background-color: #fff;
             border: none;
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
             cursor: pointer;
     
             &::before {
